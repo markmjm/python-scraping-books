@@ -1,7 +1,9 @@
-from bs4 import  BeautifulSoup
+import logging
 import re
+from bs4 import  BeautifulSoup
 from locators.book_locators import BookLocators
 
+logger = logging.getLogger('scraping.book_parser')
 
 class BookParser:
     """
@@ -18,6 +20,7 @@ class BookParser:
     }
 
     def __init__(self, parent):
+        #logger.debug(f'New book parser created from parent {parent}')
         self.parent = parent
 
     def __repr__(self):
@@ -25,6 +28,7 @@ class BookParser:
 
     @property
     def name(self):
+        logger.debug('finding book name ...')
         locator = BookLocators.NAME_LOCATOR
         item_link = self.parent.select_one(locator)
         item_name = item_link.attrs['title']
@@ -33,12 +37,14 @@ class BookParser:
 
     @property
     def link(self):
+        logger.debug('finding book link ...')
         locator = BookLocators.LINK_LOCATOR
         item_link = self.parent.select_one(locator).attrs['href']
         return (item_link)
 
     @property
     def price(self):
+        logger.debug('finding book price ...')
         locator = BookLocators.PRICE_LOCATOR
         item_price = self.parent.select_one(locator).string
         pattern = '£([0-9]+\.[0-9]+)'
@@ -47,6 +53,7 @@ class BookParser:
 
     @property
     def rating(self):
+        logger.debug('finding book rating ...')
         locator = BookLocators.RATING_LOCATOR
         star_rating_tag = self.parent.select_one(locator)
         """
